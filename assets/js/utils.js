@@ -80,7 +80,7 @@ export const registerBootlegVH = () => {
 export const debounce = (cb, time = 1000) => {
   let timer = 0;
 
-  return function() {
+  return function () {
     clearTimeout(timer);
     timer = setTimeout(() => {
       cb(...arguments);
@@ -91,7 +91,7 @@ export const debounce = (cb, time = 1000) => {
 export const throttle = (cb, time = 1000) => {
   let timer;
 
-  return function() {
+  return function () {
     if (timer) {
       return;
     }
@@ -177,7 +177,7 @@ export const shuffle = array => {
   return array;
 };
 
-const TWEETS = [() => `Hey this is a tweet, https://mschf.com/`];
+const TWEETS = [() => `Hey this is a tweet`];
 
 export const tweeter = () => {
   const generateTweet = () => {

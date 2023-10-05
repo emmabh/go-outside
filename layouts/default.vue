@@ -1,55 +1,35 @@
 <template>
-  <div v-scroll-lock="isMSCHFPreloaderActive">
-    <MSCHFPreloader
-      :drop-number="69"
-      :drop-name="'Something'"
-      :drop-id="'Something'"
-      :is-parent-drop="false"
-      :is-secret="false"
-      @didLoad="isMSCHFPreloaderActive = true"
-      @willDisappear="isMSCHFPreloaderActive = false"
-      @disappeared="onPreloaderDisappear"
-    />
-
+  <div>
     <nuxt />
   </div>
 </template>
 
 <script>
 import smoothscroll from "smoothscroll-polyfill";
-import MSCHFPreloader from "~/components/MSCHFPreloader.vue";
 import { registerBootlegVH } from "~/assets/js/utils";
 import { BreakPointSet } from "~/assets/js/mixins/breakpoints";
 
 export default {
-  components: {
-    MSCHFPreloader
-  },
   mixins: [BreakPointSet],
-  data() {
-    return {
-      isMSCHFPreloaderActive: true
-    };
-  },
   computed: {
     currentRoute() {
       return this.$route.path;
-    }
+    },
   },
-  mounted: function() {
+  mounted: function () {
     smoothscroll.polyfill();
 
     registerBootlegVH();
     // prevent the add to home screen banner
-    window.addEventListener("beforeinstallprompt", e => {
+    window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
     });
   },
   methods: {
     onPreloaderDisappear() {
       this.$store.commit("setPreloaderActive", false);
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss">
@@ -71,7 +51,7 @@ export default {
   --font-size-xx-large: 46px;
   --font-size-xxx-large: 56px;
 
-  --font-family-body: sans-serif;
+  --font-family-body: "GlossyDisplay";
   --font-family-headline: sans-serif;
 
   --font-weight-normal: 400;
@@ -120,6 +100,8 @@ html,
 body {
   width: 100%;
   min-height: 100%;
+
+  background-color: #fff;
 }
 
 .visually-hidden {

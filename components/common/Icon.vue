@@ -1,6 +1,6 @@
 <template>
   <component :is="iconComponent" v-if="noWrap" />
-  <span v-else :class="size" class="mschf-icon">
+  <span v-else :class="size" class="icon">
     <component :is="iconComponent" />
   </span>
 </template>
@@ -20,30 +20,30 @@ export default {
   props: {
     name: {
       type: String,
-      validator: prop => iconKeys.includes(prop),
-      required: true
+      validator: (prop) => iconKeys.includes(prop),
+      required: true,
     },
     size: {
       type: String,
-      validator: prop =>
+      validator: (prop) =>
         ["free", "small", "medium", "large", "xlarge"].includes(prop),
-      default: "free"
+      default: "free",
     },
     noWrap: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   computed: {
-    iconComponent: function() {
+    iconComponent: function () {
       return icons[this.name];
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-.mschf-icon {
+.icon {
   display: inline-block;
 
   width: var(--icon-size, 1em);

@@ -2,7 +2,7 @@
 const PROJECT_TITLE = "TEMPLATE";
 const PROJECT_SHORT_TITLE = "TEMPLATE";
 const PROJECT_DESCRIPTION = "DESC";
-const PROJECT_KEYWORDS = "MSCHF, "; // add more
+const PROJECT_KEYWORDS = ""; // add more
 const PROJECT_DOMAIN = "https://[URL]";
 const FB_PIXEL_ID = "[FB_PIXEL]";
 const GA_ID = "[GA_ID]";
@@ -47,7 +47,7 @@ export default {
         name: "twitter:card",
         content: "summary_large_image"
       },
-      { name: "twitter:site", content: "@mschfxyz" },
+      { name: "twitter:site", content: "@_theotheremma_" },
       {
         name: "twitter:title",
         content: PROJECT_TITLE
@@ -86,7 +86,7 @@ export default {
         property: "og:site_name",
         content: PROJECT_TITLE
       },
-      { name: "author", content: "MSCHF" },
+      { name: "author", content: "emmahoward" },
       { meta: "msapplication-TileColor", content: "#ffffff" },
       { meta: "msapplication-TileImage", content: "/ms-icon-144x144.png" },
       { meta: "theme-color", content: "#ffffff" }
@@ -181,7 +181,7 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {}
+    extend(config, ctx) { }
   },
 
   pwa: {

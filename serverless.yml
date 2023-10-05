@@ -1,4 +1,4 @@
-service: mschftemplate # make sure to update this
+service: gooutside # make sure to update this
 
 useDotenv: true
 
