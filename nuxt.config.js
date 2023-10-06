@@ -148,7 +148,6 @@ export default {
     "@nuxtjs/device",
     "@nuxtjs/axios",
     "@nuxtjs/style-resources",
-    "nuxt-facebook-pixel-module",
     "cookie-universal-nuxt",
     "@nuxtjs/markdownit"
   ],
