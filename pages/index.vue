@@ -77,6 +77,13 @@
       id="pano"
       :class="{ visible: mapShowing }"
     ></div>
+    <div
+      @click="goInsideClicked"
+      class="content__go-inside-btn"
+      v-if="goInsideShowing"
+    >
+      <p>GO INSIDE?</p>
+    </div>
   </div>
 </template>
 
@@ -107,9 +114,21 @@ export default {
         4: [false, false, false],
       },
       imagesOrder: [1, 3, 4, 6, 2, 5],
+      rowColumnOrder: [
+        [2, 2],
+        [2, 3],
+        [2, 4],
+        [3, 2],
+        [3, 3],
+        [3, 4],
+        [4, 2],
+        [4, 3],
+        [4, 4],
+      ],
       currentImageIndex: 0,
       mapShowing: false,
       map: null,
+      goInsideShowing: false,
     };
   },
   methods: {
@@ -146,16 +165,38 @@ export default {
       img.style.top = `${this.generateRandomPercentage()}%`;
       img.style.left = `${this.generateRandomPercentage()}%`;
       img.style.position = "absolute";
-      img.style.width = "120%";
-      img.style.height = "auto";
+      if (this.isTabletAndAbove) {
+        img.style.width = "100%";
+        img.style.height = "auto";
+      } else {
+        img.style.width = "auto";
+        img.style.height = "120%";
+      }
       img.style.transform = "translate3d(-50%, -50%, 0)";
       img.style.maxWidth = "none";
 
       parentElem.appendChild(img);
     },
+    rad(x) {
+      return (x * Math.PI) / 180;
+    },
 
+    getDistance(p1, p2) {
+      var R = 6378137; // Earth’s mean radius in meter
+      var dLat = this.rad(p2.lat() - p1.lat());
+      var dLong = this.rad(p2.lng() - p1.lng());
+      var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(this.rad(p1.lat())) *
+          Math.cos(this.rad(p2.lat())) *
+          Math.sin(dLong / 2) *
+          Math.sin(dLong / 2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      var d = R * c;
+      return d; // returns the distance in meter
+    },
     goOutsideClicked() {
-      if (navigator.geolocation) {
+      if (navigator.geolocation && !this.mapShowing) {
         navigator.geolocation.getCurrentPosition(this.startupMaps);
       } else {
         alert("Location services not supported");
@@ -172,6 +213,8 @@ export default {
       const { Map, StreetViewPanorama } = await google.maps.importLibrary(
         "maps"
       );
+      const sv = new google.maps.StreetViewService();
+
       // Short namespaces can be used.
       this.map = new Map(document.getElementById("map"), {
         center: pos,
@@ -179,21 +222,62 @@ export default {
       });
 
       this.panorama = new google.maps.StreetViewPanorama(
-        document.getElementById("pano"),
-        {
-          position: pos,
-          pov: {
-            heading: 34,
-            pitch: 10,
-          },
-        }
+        document.getElementById("pano")
       );
 
+      sv.getPanorama({ location: pos, radius: 50, source: "outdoor" }).then(
+        this.processSVData
+      );
+    },
+    processSVData({ data }) {
+      const location = data.location;
+
+      this.panorama.setPano(location.pano);
+      this.panorama.setPov({
+        heading: 34,
+        pitch: 10,
+      });
+
       this.map.setStreetView(this.panorama);
+      this.originalPosition = null;
+      this.panorama.setVisible(true);
+      this.panorama.addListener("position_changed", () => {
+        if (this.originalPosition == null) {
+          this.originalPosition = this.panorama.getPosition();
+          this.goInsideShowing = true;
+        } else {
+          const p2 = this.panorama.getPosition();
+          const dist = this.getDistance(p2, this.originalPosition);
+          console.log(dist);
+          if (Math.abs(dist < 3)) {
+            this.goInsideShowing = true;
+          } else {
+            this.goInsideShowing = false;
+          }
+        }
+      });
+    },
+    goInsideClicked() {
+      this.mapShowing = false;
+      this.goInsideShowing = false;
     },
   },
   mounted() {
     this.imagesOrder = shuffleArray(this.imagesOrder);
+
+    if (!this.$device.isDesktop) {
+      this.rowColumnOrder = shuffleArray(this.rowColumnOrder);
+      this.imageAddingInterval = setInterval(() => {
+        if (this.currentImageIndex >= this.imagesOrder.length) {
+          clearInterval(this.imageAddingInterval);
+        } else {
+          this.addImage(
+            this.rowColumnOrder[this.currentImageIndex][0],
+            this.rowColumnOrder[this.currentImageIndex][1]
+          );
+        }
+      }, 1000);
+    }
   },
 };
 </script>
@@ -204,8 +288,10 @@ export default {
   background-color: var(--color-white);
   width: 100vw;
   height: calc(var(--vh, 1vh) * 100);
+  overflow: hidden;
 
-  &__go-outside-btn {
+  &__go-outside-btn,
+  &__go-inside-btn {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -223,11 +309,26 @@ export default {
 
     p {
       margin: 0 0;
-      font-size: 150px;
-      line-height: 150px;
+      font-size: 70px;
+      line-height: 70px;
       color: var(--color-white);
       text-align: center;
+      white-space: nowrap;
+
+      @include tablet {
+        font-size: 100px;
+        line-height: 100px;
+      }
+
+      @include desktop {
+        font-size: 150px;
+        line-height: 150px;
+      }
     }
+  }
+
+  &__go-inside-btn {
+    z-index: 50;
   }
 
   &__pegman-img {
@@ -239,9 +340,12 @@ export default {
     height: 45%;
     width: auto;
     max-width: 90%;
+    transition: all 1s;
 
     &.front {
       z-index: 50;
+      top: 100%;
+      transform: translate3d(-50%, 30%, 0) scale(3);
     }
   }
 
