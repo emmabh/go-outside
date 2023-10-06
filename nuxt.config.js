@@ -124,7 +124,8 @@ export default {
       ? "http://localhost:3001/dev"
       : "https://amazonaws.com/dev",
     recaptcha: process.env.RECAPTCHA_KEY,
-    PROJECT_DOMAIN: process.env.LOCAL ? "http://localhost:3000" : PROJECT_DOMAIN
+    PROJECT_DOMAIN: process.env.LOCAL ? "http://localhost:3000" : PROJECT_DOMAIN,
+    GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY
   },
 
   components: [{ path: "~/components/common", extensions: ["vue"] }],
