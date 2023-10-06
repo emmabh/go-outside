@@ -1,11 +1,10 @@
 // TODO: (Ramdane) read this from a custom config file, with environment configuration
-const PROJECT_TITLE = "TEMPLATE";
-const PROJECT_SHORT_TITLE = "TEMPLATE";
-const PROJECT_DESCRIPTION = "DESC";
-const PROJECT_KEYWORDS = ""; // add more
-const PROJECT_DOMAIN = "https://[URL]";
-const FB_PIXEL_ID = "[FB_PIXEL]";
-const GA_ID = "[GA_ID]";
+const PROJECT_TITLE = "GO OUTSIDE";
+const PROJECT_SHORT_TITLE = "GO";
+const PROJECT_DESCRIPTION = "sitting at your desk all day? go outside :)";
+const PROJECT_KEYWORDS = "google maps, go outside, emma howard, outside"; // add more
+const PROJECT_DOMAIN = "https://gooutside.emmabhoward.com";
+const GA_ID = "";
 
 export default {
   mode: "universal",
@@ -137,12 +136,6 @@ export default {
     // { src: "~plugins/vue-carousel.js", ssr: false },
     { src: "~plugins/vue-resize.js", ssr: false }
   ],
-  facebook: {
-    /* module options */
-    track: "PageView",
-    pixelId: FB_PIXEL_ID,
-    disabled: false
-  },
   /*
    ** Nuxt.js dev-modules
    */
