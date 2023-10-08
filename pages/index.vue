@@ -57,12 +57,16 @@
       ></div>
     </div>
     <img
-      class="content__pegman-img"
+      class="content__peggy-img"
       :class="{ front: mapShowing }"
-      src="~/assets/img/pegman.png"
+      src="~/assets/img/peggy.svg"
     />
 
-    <div @click="goOutsideClicked" class="content__go-outside-btn">
+    <div
+      :class="{ visible: !isBusy }"
+      @click="goOutsideClicked"
+      class="content__go-outside-btn"
+    >
       <p>GO OUTSIDE</p>
       <p>GO OUTSIDE</p>
       <p>GO OUTSIDE</p>
@@ -83,6 +87,10 @@
       v-if="goInsideShowing"
     >
       <p>GO INSIDE?</p>
+    </div>
+
+    <div class="content__opening-door-text" v-if="isBusy">
+      <p>OPENING DOOR{{ openingDoorDots }}</p>
     </div>
   </div>
 </template>
@@ -129,6 +137,8 @@ export default {
       mapShowing: false,
       map: null,
       goInsideShowing: false,
+      isBusy: false,
+      openingDoorDots: ".",
     };
   },
   methods: {
@@ -195,8 +205,24 @@ export default {
       var d = R * c;
       return d; // returns the distance in meter
     },
+    setIsBusy() {
+      this.isBusy = true;
+
+      this.openingDoorDotsInterval = setInterval(() => {
+        if (!this.isBusy) {
+          clearInterval(this.openingDoorDotsInterval);
+        } else {
+          if (this.openingDoorDots.length == 3) {
+            this.openingDoorDots = ".";
+          } else {
+            this.openingDoorDots = this.openingDoorDots + ".";
+          }
+        }
+      }, 500);
+    },
     goOutsideClicked() {
       if (navigator.geolocation && !this.mapShowing) {
+        this.setIsBusy();
         navigator.geolocation.getCurrentPosition(this.startupMaps);
       } else {
         alert("Location services not supported");
@@ -225,9 +251,14 @@ export default {
         document.getElementById("pano")
       );
 
-      sv.getPanorama({ location: pos, radius: 50, source: "outdoor" }).then(
-        this.processSVData
-      );
+      sv.getPanorama({ location: pos, radius: 50, source: "outdoor" })
+        .then(this.processSVData)
+        .catch((err) => {
+          console.log(err);
+          this.isBusy = false;
+          this.mapShowing = false;
+          alert("Going outside not supported in your area :(");
+        });
     },
     processSVData({ data }) {
       const location = data.location;
@@ -241,6 +272,9 @@ export default {
       this.map.setStreetView(this.panorama);
       this.originalPosition = null;
       this.panorama.setVisible(true);
+
+      this.isBusy = false;
+
       this.panorama.addListener("position_changed", () => {
         if (this.originalPosition == null) {
           this.originalPosition = this.panorama.getPosition();
@@ -292,11 +326,9 @@ export default {
 
   &__go-outside-btn,
   &__go-inside-btn {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate3d(-50%, -50%, 0);
-    mix-blend-mode: difference;
+    p {
+      text-align: center;
+    }
 
     &:hover {
       cursor: pointer;
@@ -306,13 +338,22 @@ export default {
         color: red;
       }
     }
+  }
+
+  &__go-outside-btn,
+  &__go-inside-btn,
+  &__opening-door-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0);
+    mix-blend-mode: difference;
 
     p {
       margin: 0 0;
       font-size: 70px;
       line-height: 70px;
       color: var(--color-white);
-      text-align: center;
       white-space: nowrap;
 
       @include tablet {
@@ -327,17 +368,45 @@ export default {
     }
   }
 
+  &__opening-door-text {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    p {
+      text-align: left;
+      width: 410px;
+
+      @include tablet {
+        width: 600px;
+      }
+
+      @include desktop {
+        width: 900px;
+      }
+    }
+  }
+
+  &__go-outside-btn {
+    visibility: hidden;
+    &.visible {
+      visibility: visible;
+    }
+  }
+
   &__go-inside-btn {
     z-index: 50;
   }
 
-  &__pegman-img {
+  &__peggy-img {
+    pointer-events: none;
+    user-select: none;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate3d(-50%, -50%, 0);
 
-    height: 45%;
+    height: 50%;
     width: auto;
     max-width: 90%;
     transition: all 1s;
@@ -345,7 +414,7 @@ export default {
     &.front {
       z-index: 50;
       top: 100%;
-      transform: translate3d(-50%, 30%, 0) scale(3);
+      transform: translate3d(-50%, 29%, 0) scale(3);
     }
   }
 
