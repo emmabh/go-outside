@@ -437,8 +437,8 @@ export default {
       width: 100%;
       height: 100%;
 
-      pointer-events: none;
-      user-select: none;
+      // pointer-events: none;
+      // user-select: none;
 
       &--2-2 {
         grid-row: 2;
