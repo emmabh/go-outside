@@ -71,6 +71,9 @@
       <p>GO OUTSIDE</p>
       <p>GO OUTSIDE</p>
     </div>
+    <div class="content__shameless-plug">
+      BY <a href="https://emmabhoward.com" target="_blank">EMMA</a>
+    </div>
     <div
       class="content__maps-container"
       id="map"
@@ -434,6 +437,9 @@ export default {
       width: 100%;
       height: 100%;
 
+      pointer-events: none;
+      user-select: none;
+
       &--2-2 {
         grid-row: 2;
         grid-column: 2;
@@ -491,6 +497,28 @@ export default {
 
     &.visible {
       visibility: visible;
+    }
+  }
+
+  &__shameless-plug {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    font-size: 16px;
+
+    @include tablet {
+      font-size: 20px;
+      bottom: 10px;
+      right: 10px;
+    }
+
+    a {
+      color: var(--color-black);
+      text-decoration-thickness: 1px;
+
+      &:hover {
+        color: red;
+      }
     }
   }
 }
