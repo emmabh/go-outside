@@ -417,7 +417,11 @@ export default {
     &.front {
       z-index: 50;
       top: 100%;
-      transform: translate3d(-50%, 29%, 0) scale(3);
+      transform: translate3d(-36%, 3%, 0) scale(2);
+
+      @include tablet {
+        transform: translate3d(-50%, 29%, 0) scale(3);
+      }
     }
   }
 
