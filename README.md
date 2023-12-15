@@ -1,22 +1,5 @@
-# [PROJECT_NAME]
+# GO OUTSIDE
 
-> [PROJECT_DOMAIN]
+Using the immense, beautiful power of google street view to allow YOU to go for a walk RIGHT NOW, right from your desk, on the web :)
 
-## Build Setup
-
-``` bash
-# install dependencies
-$ yarn install
-
-# serve with hot reload at localhost:3000
-$ yarn dev
-
-# build for production and launch server
-$ yarn build
-$ yarn start
-
-# generate static project
-$ yarn generate
-```
-
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+Empowering.
